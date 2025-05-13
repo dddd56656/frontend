@@ -11,7 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
-
+# ESLint 缓存文件
+.eslintcache
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -6,12 +6,12 @@ import type { RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',                // 首页路由
-    name: 'Home',
+    name: 'AppHome',
     component: () => import('@/views/AppHome.vue'), // 懒加载，提升首屏性能
   },
   {
     path: '/about',           // 关于页路由
-    name: 'About',
+    name: 'AppAbout',
     component: () => import('@/views/AppAbout.vue'),
   },
 ]

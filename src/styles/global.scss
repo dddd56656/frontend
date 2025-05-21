@@ -1,0 +1,8 @@
+@use './variables' as *;  // ✅ 放在第一行，不能混写 @import
+
+body {
+  font-size: $font-size-base;
+  color: $primary-color;
+  margin: 0;
+  font-family: 'Roboto', Arial, sans-serif;
+}

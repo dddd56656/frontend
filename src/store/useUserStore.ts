@@ -1,15 +1,16 @@
+// src/store/useUserStore.ts
 import { defineStore } from 'pinia'
+import http from '@/utils/http'
+import type { UserInfo } from '@/types/user'
 
-// defineStore第一个参数为唯一ID，便于调试和多实例管理
 export const useUserStore = defineStore('user', {
-  // 统一state管理用户数据，提高可维护性
   state: () => ({
-    name: '未登录用户',
-    isLoggedIn: false,
+    name: '未登录用户' as string,
+    isLoggedIn: false as boolean,
   }),
-  // actions封装业务逻辑，便于代码复用
   actions: {
-    login(name: string) {
+    async login(name: string) {
+      // 演示写死，实际可以用 http.post 登录
       this.name = name
       this.isLoggedIn = true
     },
@@ -17,5 +18,11 @@ export const useUserStore = defineStore('user', {
       this.name = '未登录用户'
       this.isLoggedIn = false
     },
-  },
+    async fetchUser() {
+      // 泛型声明：确保 data 是 UserInfo 类型
+      const data = await http.get<UserInfo>('/users/1')
+      this.name = data.name
+      this.isLoggedIn = data.isLoggedIn
+    }
+  }
 })

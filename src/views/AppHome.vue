@@ -19,14 +19,12 @@ const user = useUserStore()
 const refreshUser = () => user.fetchUser()
 </script>
 
-<style lang="scss" scoped>
-@use 'sass:color';
-// 无需再次 import，$primary-color 已注入
+<style scoped>
 .home-box {
   padding: 20px;
-  background: color.adjust($primary-color, $lightness: 40%);
-  color: $primary-color;
-  border: 1px solid $primary-color;
+  background: var(--el-color-primary-light-8);
+  color: var(--el-color-primary);
+  border: 1px solid var(--el-color-primary);
   border-radius: 8px;
 }
 </style>

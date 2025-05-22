@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 // 导入自定义router和pinia模块
-import { router } from './router'
+import router from './router'
 import { pinia } from './store'
 import './styles/global.scss'
 import ElementPlus from 'element-plus'

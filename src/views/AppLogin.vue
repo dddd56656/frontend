@@ -23,6 +23,8 @@ const errorMsg = ref('')
 const handleLogin = async () => {
   try {
     await userStore.login(username.value, password.value)
+    // localStorage.setItem('userInfo', JSON.stringify(isLoggedIn))
+
     window.location.href = '/'
   } catch {
     errorMsg.value = '用户名或密码错误'
@@ -36,6 +38,7 @@ const handleLogin = async () => {
   flex-direction: column;
   gap: 18px;
 }
+
 .error {
   color: red;
   margin-top: 8px;

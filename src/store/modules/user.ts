@@ -29,6 +29,11 @@ export const useUserStore = defineStore('user', {
      * @param info 登录成功后的用户信息
      */
     setLogin(info: Omit<UserInfo, 'isLoggedIn'>) {
+      localStorage.setItem('[setLogin被调用1]', JSON.stringify(info.id))
+      localStorage.setItem('[setLogin被调用2]', JSON.stringify(info.name))
+      localStorage.setItem('[setLogin被调用3]', JSON.stringify(info.email))
+      localStorage.setItem('[setLogin被调用4]', JSON.stringify(info.avatarUrl))
+
       this.id = info.id
       this.name = info.name
       this.email = info.email
@@ -52,7 +57,12 @@ export const useUserStore = defineStore('user', {
      */
     async login(username: string, password: string) {
       const user = await loginApi(username, password)
+      console.log('用户信息' + user)
+
       this.setLogin(user)
+      // === 推荐：持久化写入localStorage（大厂标准做法） ===
+      localStorage.setItem('userInfo', JSON.stringify(user))
+
       // 可选：本地存储token等
     },
 

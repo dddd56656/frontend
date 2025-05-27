@@ -27,7 +27,7 @@ export default defineConfig({
     proxy: {
       // 只要是 /api 开头的请求，代理到后端
       '/api': {
-        target: 'https://dev-api.example.com',   // 后端接口地址
+        target: 'https://dfasdfad.free.beeceptor.com',   // 后端接口地址
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ''),
       }

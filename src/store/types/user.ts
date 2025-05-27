@@ -1,13 +1,12 @@
 /**
- * 用户模块相关类型
- * 按Google级标准独立维护，便于多人协作和类型扩展
+ * 用户模块类型定义（Google风格）
+ * 只做类型声明，适合多人协作、未来扩展
  */
-
 export interface UserInfo {
-  id: string
-  name: string
-  email: string
-  avatarUrl?: string
-  isLoggedIn: boolean
-  // 可扩展如角色、权限、token等
+  id: string                // 用户唯一ID
+  name: string              // 用户名
+  email: string             // 邮箱
+  avatarUrl?: string        // 头像URL
+  isLoggedIn: boolean       // 登录状态
+  // 可拓展：roles, permissions, token等
 }

@@ -1,23 +1,26 @@
+/**
+ * 应用主入口（main.ts）
+ * - 注册Pinia、Router、ElementPlus等
+ * - 最大化注释，团队友好
+ */
+
 import { createApp } from 'vue'
-import './style.css'
 import App from './App.vue'
-// 导入自定义router和pinia模块
-import router from './router'
-import { pinia } from './store'
-import './styles/global.scss'
+import router from '@/router'
+import { createPinia } from 'pinia'
 import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css' // 核心样式
+import 'element-plus/dist/index.css'
 
+// 创建pinia实例
+const pinia = createPinia()
 
-// 创建Vue应用实例
+// 创建vue app
 const app = createApp(App)
 
-// 注册Pinia插件（全局状态管理）
+// 注册全局插件
 app.use(pinia)
-
-// 注册Router插件（全局路由管理）
 app.use(router)
-//regist ElementPlus
 app.use(ElementPlus)
-// 挂载到根节点
+
+// 挂载应用
 app.mount('#app')

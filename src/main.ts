@@ -7,12 +7,10 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from '@/router'
-import { createPinia } from 'pinia'
+import { pinia } from '@/store'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
-// 创建pinia实例
-const pinia = createPinia()
 
 // 创建vue app
 const app = createApp(App)

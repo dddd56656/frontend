@@ -38,7 +38,7 @@ const handleLogin = async () => {
     console.log('[handleLogin] 尝试登录', username.value, password.value)
     await userStore.login(username.value, password.value)
     // === 登录后调试：打印store状态 ===
-    console.log('[handleLogin] 登录后 userStore:', userStore.$state)
+    console.log('[handleLogin] 登录后 userStore:', userStore.isLoggedIn)
     
     // === 登录后通常跳转到主页，避免停留在登录页 ===
     window.location.href = '/'

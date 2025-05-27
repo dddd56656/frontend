@@ -27,7 +27,7 @@ export default defineConfig({
     proxy: {
       // 只要是 /api 开头的请求，代理到后端
       '/api': {
-        target: 'https://dfasdfad.free.beeceptor.com',   // 后端接口地址
+        target: 'https://5e630207-9d74-4a55-986b-0054e8117c52.mock.pstmn.io',   // 后端接口地址
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ''),
       }

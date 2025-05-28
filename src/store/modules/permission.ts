@@ -1,202 +1,113 @@
-// store/permission.ts
-// 权限 Pinia Store 层，所有数据、状态、业务逻辑全在这里集中管理
-// —— 谷歌最佳实践：store 负责所有数据流动和状态同步，组件零逻辑，只调 store
+// 权限管理 Store，Pinia 方案
+// —— 只负责状态和业务逻辑，数据类型完全解耦到 types 文件
+// —— 符合谷歌最佳实践，极致注释
 
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import NProgress from 'nprogress'
+import { defineStore } from 'pinia'                   // 引入 Pinia
+import { ref, computed } from 'vue'                   // 响应式工具
 import {
-  fetchPermissions,
-  createPermission,
-  updatePermission,
-  deletePermission,
-} from '@/services/permission'
+  fetchPermissions,                                  // 拉取列表接口
+  createPermission,                                  // 新增接口
+  updatePermission,                                  // 编辑接口
+  deletePermission,                                  // 删除接口
+} from '@/services/permission'                        // 引入服务层
 import type {
-  Permission,
-  PermissionQuery,
-  PermissionCreatePayload,
-  PermissionUpdatePayload,
-} from '@/types/permission'
+  Permission,                                        // 权限实体类型
+  PermissionQuery,                                   // 查询参数类型
+  PermissionCreatePayload,                           // 新增参数类型
+  PermissionUpdatePayload,                           // 编辑参数类型
+} from '@/types/permission'                           // 引入类型定义
 
 /**
- * 权限数据的 Pinia Store
- * 封装了：列表、分页、搜索、loading、CRUD 所有业务
+ * 权限管理 Pinia Store
+ * - 包含列表、分页、搜索、CRUD
+ * - 状态/类型全部解耦
  */
 export const usePermissionStore = defineStore('permission', () => {
-  // 权限列表数据
-  const list = ref<Permission[]>([])
-  // 数据总条数
-  const total = ref(0)
-  // 当前页码（分页）
-  const page = ref(1)
-  // 每页数量（分页）
-  const pageSize = ref(20)
+  // 权限列表（响应式）
+  const list = ref<Permission[]>([])                 // 权限数据数组
+  // 总数据条数
+  const total = ref(0)                               // 权限总数
+  // 分页相关状态
+  const page = ref(1)                                // 当前页码
+  const pageSize = ref(20)                           // 每页显示数量
   // 搜索关键字
-  const search = ref('')
-  // 加载状态（适配表格、按钮等所有 loading）
-  const loading = ref(false)
+  const search = ref('')                             // 搜索内容
 
-  // 查询参数自动计算（解耦 UI 只读 store）
+  // 查询参数（响应式自动同步）
   const query = computed<PermissionQuery>(() => ({
-    page: page.value,
-    pageSize: pageSize.value,
-    search: search.value,
+    page: page.value,                                // 当前页
+    pageSize: pageSize.value,                        // 每页数
+    search: search.value,                            // 搜索关键词
   }))
-// menus.ts
-// 支持多级菜单和权限控制
-const menuTree = [
-  {
-    path: '/dashboard',
-    title: '仪表盘',
-    icon: 'el-icon-s-home',
-    children: [],
-  },
-  {
-    path: '/system',
-    title: '系统管理',
-    icon: 'el-icon-setting',
-    children: [
-      {
-        path: '/system/user',
-        title: '用户管理',
-        icon: 'el-icon-user',
-      },
-      {
-        path: '/system/role',
-        title: '角色管理',
-        icon: 'el-icon-s-custom',
-      },
-      {
-        path: '/system/permission',
-        title: '权限管理',
-        icon: 'el-icon-lock',
-      },
-      {
-        path: '/system/rule',
-        title: '权限规则',
-        icon: 'el-icon-document',
-      },
-    ],
-  },
-]
 
   /**
-   * 拉取权限列表
-   * 支持分页、搜索，loading 状态自动同步
+   * 拉取权限列表（分页、搜索等自动带入）
    */
   async function getList() {
-    loading.value = true
-    NProgress.start() // 顶部 loading 条
-    try {
-      const res = await fetchPermissions(query.value)
-      list.value = res.list
-      total.value = res.total
-    } catch (error) {
-      // 异常可拓展: 上报/弹窗/记录日志
-      console.error('权限列表获取失败', error)
-    } finally {
-      loading.value = false
-      NProgress.done()
-    }
+    const res = await fetchPermissions(query.value)  // 调用接口获取权限数据
+    list.value = res.list                            // 赋值数据
+    total.value = res.total                          // 赋值总数
   }
 
   /**
    * 新增权限
-   * 自动刷新列表
+   * @param payload 新增参数
    */
   async function addPermission(payload: PermissionCreatePayload) {
-    loading.value = true
-    NProgress.start()
-    try {
-      await createPermission(payload)
-      await getList() // 保证数据一致
-    } catch (error) {
-      console.error('权限新增失败', error)
-    } finally {
-      loading.value = false
-      NProgress.done()
-    }
+    await createPermission(payload)                  // 新增接口
+    await getList()                                  // 新增后刷新
   }
 
   /**
    * 编辑权限
-   * 自动刷新列表
+   * @param payload 编辑参数
    */
   async function editPermission(payload: PermissionUpdatePayload) {
-    loading.value = true
-    NProgress.start()
-    try {
-      await updatePermission(payload)
-      await getList()
-    } catch (error) {
-      console.error('权限更新失败', error)
-    } finally {
-      loading.value = false
-      NProgress.done()
-    }
+    await updatePermission(payload)                  // 编辑接口
+    await getList()                                  // 编辑后刷新
   }
 
   /**
    * 删除权限
-   * 自动刷新列表
+   * @param id 权限ID
    */
   async function removePermission(id: string) {
-    loading.value = true
-    NProgress.start()
-    try {
-      await deletePermission(id)
-      await getList()
-    } catch (error) {
-      console.error('权限删除失败', error)
-    } finally {
-      loading.value = false
-      NProgress.done()
-    }
+    await deletePermission(id)                       // 删除接口
+    await getList()                                  // 删除后刷新
   }
 
   /**
-   * 设置页码，并刷新列表（分页跳转）
-   * @param val - 新页码
+   * 设置当前页
+   * @param val 页码
    */
   function setPage(val: number) {
-    page.value = val
-    getList()
+    page.value = val                                // 更新页码
+    getList()                                       // 自动刷新
   }
 
   /**
-   * 设置每页显示条数，并刷新列表
-   * @param val - 新 pageSize
+   * 设置每页数量
+   * @param val 数量
    */
   function setPageSize(val: number) {
-    pageSize.value = val
-    getList()
+    pageSize.value = val                            // 更新每页数量
+    getList()                                       // 自动刷新
   }
 
   /**
-   * 设置搜索关键字，重置页码并刷新列表
-   * @param val - 搜索内容
+   * 设置搜索内容
+   * @param val 关键词
    */
   function setSearch(val: string) {
-    search.value = val
-    page.value = 1 // 搜索后从第一页展示
-    getList()
+    search.value = val                              // 更新搜索关键字
+    page.value = 1                                  // 搜索重置页码
+    getList()                                       // 自动刷新
   }
 
-  // 导出所有数据与方法，组件只需解构使用
+  // 返回状态与方法，供组件调用
   return {
-    list,           // 权限数据列表
-    total,          // 总条数
-    page,           // 当前页
-    pageSize,       // 每页条数
-    search,         // 搜索关键字
-    loading,        // 全局 loading
-    getList,        // 拉取列表
-    addPermission,  // 新增权限
-    editPermission, // 编辑权限
-    removePermission,// 删除权限
-    setPage,        // 设置页码
-    setPageSize,    // 设置每页条数
-    setSearch,      // 设置搜索关键字
-    menuTree,
+    list, total, page, pageSize, search,             // 状态
+    getList, addPermission, editPermission, removePermission, // 操作
+    setPage, setPageSize, setSearch,                 // 分页/搜索
   }
 })

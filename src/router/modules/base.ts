@@ -11,7 +11,7 @@ export const baseRoutes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/AppLogin.vue'),
+    component: () => import('@/views/Login/AppLogin.vue'),
     meta: { layout: 'auth', public: true, title: '登录' }
   },
   {
@@ -19,12 +19,12 @@ export const baseRoutes: RouteRecordRaw[] = [
     component: MainLayout,
     meta: { layout: 'main', requiresAuth: true },  // 这里meta可以不用name了
     children: [
-      {
-        path: '',
-        name: 'Home',
-        component: () => import('@/views/AppHome.vue'),
-        meta: { requiresAuth: true, title: '首页' }
-      },
+      // {
+      //   path: '',
+      //   name: 'Home',
+      //   component: () => import('@/views/AppHome.vue'),
+      //   meta: { requiresAuth: true, title: '首页' }
+      // },
       // ⚠️ 其它业务路由都写children
       // 注意：如果你permissionRoutes里是相对路径，直接放children就行
       // ...permissionRoutes,

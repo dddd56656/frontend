@@ -6,8 +6,6 @@
 </template>
 
 <script setup lang="ts">
-// 引入主layout
-import MainLayout from '@/layouts/MainLayout.vue'
 import { useUserStore } from '@/store/modules/user'
 
 // 读取用户信息

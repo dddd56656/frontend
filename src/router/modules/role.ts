@@ -7,7 +7,7 @@ import { type RouteRecordRaw } from 'vue-router'                   // 引入路�
 
 const roleRoutes: RouteRecordRaw[] = [
   {
-    path: 'system/role',                                            // 访问路径
+    path: 'role',                                            // 访问路径
     name: 'RoleList',                                         // 路由名称，唯一标识
     component: () => import('@/views/role/RoleList.vue'),      // 路由懒加载（只加载必要页面）
     meta: {

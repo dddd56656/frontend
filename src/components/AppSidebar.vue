@@ -22,8 +22,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { usePermissionStore } from '@/store/modules/permission' // 假设菜单数据来源于权限store
 import SubMenu from './SubMenu.vue' // 递归菜单渲染组件
+import menuTree from '@/router/menuTree'
 
 // 是否折叠侧边栏，可做成响应式
 const isCollapse = ref(false)
@@ -31,9 +31,6 @@ const isCollapse = ref(false)
 const route = useRoute()
 const activeMenu = computed(() => route.path)
 
-// 动态菜单树，通常由后端或store加载，按权限自动筛选
-const permissionStore = usePermissionStore()
-const menuTree = computed(() => permissionStore.menuTree) // 或其它来源
 </script>
 
 <style scoped>

@@ -1,53 +1,35 @@
-// types/rule.ts
-// 权限规则类型定义，通常是角色-资源-操作的关联关系
-// —— 谷歌最佳实践：类型单独维护，便于扩展/维护/自动生成文档
+// 权限规则 Rule 相关类型定义
+// —— 彻底解耦接口与类型，便于维护和协作
 
-/**
- * 权限规则实体结构
- */
+// 权限规则数据结构
 export interface Rule {
-  id: string                // 规则唯一标识
-  roleId: string            // 所属角色id
-  resource: string          // 资源标识（如 menu、api、button）
-  action: string            // 动作类型（如 read、write、delete）
-  effect: 'allow' | 'deny'  // 允许/拒绝
-  description?: string      // 描述
-  createdAt: string         // 创建时间
-  updatedAt: string         // 更新时间
+  id: string           // 规则ID，唯一标识
+  name: string         // 规则名称
+  desc?: string        // 规则描述，可选
+  expression?: string  // 规则表达式（如条件公式），可选
 }
 
-/**
- * 规则查询参数
- */
+// 查询参数结构（分页+搜索）
 export interface RuleQuery {
-  page: number              // 当前页
-  pageSize: number          // 每页数量
-  search?: string           // 搜索关键字
-  roleId?: string           // 指定角色过滤（可选）
+  page: number         // 当前页码
+  pageSize: number     // 每页条数
+  search?: string      // 搜索关键字，可选
 }
 
-/**
- * 规则列表返回结构
- */
+// 列表响应结构
 export interface RuleListResponse {
-  list: Rule[]              // 当前页规则
-  total: number             // 总条数
+  list: Rule[]         // 规则数据数组
+  total: number        // 总条数
 }
 
-/**
- * 新增规则参数
- */
+// 新增规则参数结构
 export interface RuleCreatePayload {
-  roleId: string            // 角色id
-  resource: string          // 资源名
-  action: string            // 操作名
-  effect: 'allow' | 'deny'  // 允许/拒绝
-  description?: string      // 描述（可选）
+  name: string         // 规则名称
+  desc?: string        // 规则描述，可选
+  expression?: string  // 规则表达式，可选
 }
 
-/**
- * 更新规则参数
- */
+// 编辑规则参数结构（带ID）
 export interface RuleUpdatePayload extends RuleCreatePayload {
-  id: string                // 规则id
+  id: string           // 规则ID
 }

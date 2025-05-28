@@ -27,7 +27,7 @@ export const menuTree: MenuItem[] = [
       {
         path: '/role',            // 子菜单路径
         name: 'Role',
-        title: '角色管理1',
+        title: '角色管理',
         icon: 'UserSwitch',
         roles: ['admin', 'op'],
       },

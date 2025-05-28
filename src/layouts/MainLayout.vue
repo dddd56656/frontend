@@ -7,10 +7,11 @@
     <div class="layout-body">
       <!-- 左侧多级权限菜单，菜单项和路由、权限强关联 -->
       <AppSidebar />
-      <!-- 主内容区，用 slot 渲染页面内容 -->
       <main class="main-content">
-        <slot />
-      </main>
+        <!-- 关键：用 router-view 渲染主内容区，不要用 slot -->
+        <router-view v-slot="{ Component }">
+          <component :is="Component" />
+        </router-view>      </main>
     </div>
     <!-- 全局底部信息区，可插入版权、帮助等 -->
     <AppFooter />

@@ -5,8 +5,22 @@ import { baseRoutes } from './modules/base'
 import { otherRoutes } from './modules/other'
 import { useUserStore } from '@/store/modules/user'
 import { ElMessageBox } from 'element-plus'
+import permissionRoutes from '@/router/modules/permission'
 
-const routes = [...baseRoutes, ...otherRoutes]
+// 找到 MainLayout 的 children，并把所有业务模块路由合进去
+const mainLayoutChildren = baseRoutes[1]?.children ?? []
+
+mainLayoutChildren.push(
+  ...permissionRoutes,
+  // ...userRoutes,
+  // ...dashboardRoutes,
+  // ...articleRoutes
+  // ...其它业务模块
+)
+const routes = [
+  ...baseRoutes,
+  ...otherRoutes
+]
 
 const router = createRouter({
   history: createWebHistory(),

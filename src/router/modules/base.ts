@@ -5,6 +5,8 @@
 
 import type { RouteRecordRaw } from 'vue-router'
 
+import MainLayout from '@/layouts/MainLayout.vue'
+
 export const baseRoutes: RouteRecordRaw[] = [
   {
     path: '/login',
@@ -14,9 +16,18 @@ export const baseRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/',
-    name: 'Home',
-    component: () => import('@/views/AppHome.vue'),
-    meta: { layout: 'main', requiresAuth: true, title: '首页' }
+    component: MainLayout,
+    meta: { layout: 'main', requiresAuth: true },  // 这里meta可以不用name了
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: () => import('@/views/AppHome.vue'),
+        meta: { requiresAuth: true, title: '首页' }
+      },
+      // ⚠️ 其它业务路由都写children
+      // 注意：如果你permissionRoutes里是相对路径，直接放children就行
+      // ...permissionRoutes,
+    ]
   }
-  // 可扩展更多公共页面
 ]

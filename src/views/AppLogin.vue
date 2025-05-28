@@ -17,49 +17,43 @@
 import { ref } from 'vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import { useUserStore } from '@/store/modules/user'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+// 如用路由跳转而非window.location，可解开以下注释：
+// import { useRouter } from 'vue-router'
 
-/**
- * 1. 响应式本地变量，用于双向绑定表单
- */
 const userStore = useUserStore()
-const username = ref('') // 用户名输入框
-const password = ref('') // 密码输入框
-const errorMsg = ref('') // 错误信息提示
+const username = ref('')
+const password = ref('')
+const errorMsg = ref('')
+// const router = useRouter() // 如果你希望SPA跳转
 
 /**
- * 2. 登录业务逻辑
- * - 只做：调用户store的login方法，不直接处理业务细节
- * - 登录成功后跳转主页，失败则提示错误
+ * 登录业务逻辑，带nprogress全局进度条
  */
 const handleLogin = async () => {
+  errorMsg.value = ''
+  NProgress.start() // 显示顶部进度条
   try {
-    // 调用store的login方法（强制走全局业务逻辑）
-    // === 调试建议：登录前打印输入 ===
-    console.log('[handleLogin] 尝试登录', username.value, password.value)
     await userStore.login(username.value, password.value)
-    // === 登录后调试：打印store状态 ===
-    console.log('[handleLogin] 登录后 userStore:', userStore.isLoggedIn)
-    
-    // === 登录后通常跳转到主页，避免停留在登录页 ===
+    NProgress.done() // 登录成功，进度条完成
+    // 跳转主页，推荐SPA用router.push
     window.location.href = '/'
-    // === 如需SPA跳转用 router.push('/') 更佳 ===
+    // 或 router.push('/')
   } catch (e) {
-    // === 捕获store/login抛出的错误（如用户名或密码错误） ===
     errorMsg.value = '用户名或密码错误'
-    // === 调试建议：打印具体错误对象 ===
+    NProgress.done() // 登录失败也要关闭进度条
     console.error('[handleLogin] 登录失败', e)
   }
 }
 </script>
 
 <style scoped>
-/* 页面结构与交互样式，只负责UI，无业务逻辑 */
 .login-form {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
-
 .error {
   color: red;
   margin-top: 8px;

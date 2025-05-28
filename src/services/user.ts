@@ -5,7 +5,7 @@
  */
 
 import http from '@/utils/http'
-import type { UserInfo } from '@/store/types/user'
+import type { UserInfo } from '@/types/user'
 
 /**
  * 用户登录

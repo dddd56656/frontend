@@ -1,47 +1,50 @@
+<!-- components/AppSidebar.vue -->
 <template>
+  <!-- 多级菜单结构，和路由/权限关联，支持递归渲染 -->
   <aside class="app-sidebar">
-    <!-- 侧边菜单栏，可根据权限/路由动态生成 -->
-    <nav>
-      <ul>
-        <li><router-link to="/">首页</router-link></li>
-        <li><router-link to="/about">关于</router-link></li>
-        <!-- 可扩展更多 -->
-      </ul>
-    </nav>
+    <el-menu
+      :default-active="activeMenu"
+      class="sidebar-menu"
+      :collapse="isCollapse"
+      :unique-opened="true"
+      router
+      background-color="#263445"
+      text-color="#fff"
+      active-text-color="#ffd04b"
+    >
+      <template v-for="item in menuTree" :key="item.path">
+        <SubMenu :menu="item" />
+      </template>
+    </el-menu>
   </aside>
 </template>
 
 <script setup lang="ts">
-/**
- * AppSidebar
- * 侧边菜单，可接入动态权限/路由管理
- */
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { usePermissionStore } from '@/store/modules/permission' // 假设菜单数据来源于权限store
+import SubMenu from './SubMenu.vue' // 递归菜单渲染组件
+
+// 是否折叠侧边栏，可做成响应式
+const isCollapse = ref(false)
+// 当前激活菜单项
+const route = useRoute()
+const activeMenu = computed(() => route.path)
+
+// 动态菜单树，通常由后端或store加载，按权限自动筛选
+const permissionStore = usePermissionStore()
+const menuTree = computed(() => permissionStore.menuTree) // 或其它来源
 </script>
 
 <style scoped>
 .app-sidebar {
-  width: 200px;
-  background: #fff;
-  border-right: 1px solid #eee;
-  padding-top: 18px;
-  min-height: 100%;
+  width: 220px;
+  background: #263445;
+  min-height: 0;
+  transition: width 0.2s;
+  overflow: auto;
 }
-.app-sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-.app-sidebar li {
-  margin: 12px 0;
-}
-.app-sidebar a {
-  color: #333;
-  text-decoration: none;
-  padding: 8px 16px;
-  display: block;
-  border-radius: 8px;
-}
-.app-sidebar a.router-link-active {
-  background: #409eff22;
-  color: #409eff;
+.sidebar-menu {
+  border-right: none;
 }
 </style>

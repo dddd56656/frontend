@@ -3,5 +3,6 @@ import { createPinia } from 'pinia'
 import piniaPersist from 'pinia-plugin-persistedstate'
 
 // 导出Pinia实例
-export const pinia = createPinia()
+const pinia = createPinia()
 pinia.use(piniaPersist)
+export default pinia

@@ -12,13 +12,17 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@formily/vue": "^2.3.7",
     "axios": "^1.9.0",
     "element-plus": "^2.9.10",
     "nprogress": "^0.2.0",
     "pinia": "^3.0.2",
     "pinia-plugin-persistedstate": "^4.3.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.1"
+    "vue-final-modal": "^4.5.5",
+    "vue-router": "^4.5.1",
+    "vxe-table": "^4.13.31",
+    "xe-utils": "^3.7.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",

@@ -1,23 +1,24 @@
+<!-- layouts/MainLayout.vue -->
 <template>
-  <!-- 主应用外壳，包含头部、侧边栏、主内容和全局通知等 -->
+  <!-- 主应用外壳，包含头部、侧边栏、主内容区、底部 -->
   <div class="main-layout">
-    <!-- 头部导航栏（可插槽自定义） -->
+    <!-- 头部导航栏，可扩展多语言、头像、快捷操作等 -->
     <AppHeader />
     <div class="layout-body">
-      <!-- 侧边栏（如有权限菜单） -->
+      <!-- 左侧多级权限菜单，菜单项和路由、权限强关联 -->
       <AppSidebar />
-      <!-- 主内容区：用slot注入实际页面内容 -->
+      <!-- 主内容区，用 slot 渲染页面内容 -->
       <main class="main-content">
         <slot />
       </main>
     </div>
-    <!-- 全局底部 -->
+    <!-- 全局底部信息区，可插入版权、帮助等 -->
     <AppFooter />
   </div>
 </template>
 
 <script setup lang="ts">
-// 引用复用组件
+// 引用基础组件（头部、侧边栏、底部）
 import AppHeader from '@/components/AppHeader.vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
@@ -34,6 +35,7 @@ import AppFooter from '@/components/AppFooter.vue'
   flex: 1;
   display: flex;
   flex-direction: row;
+  min-height: 0;
 }
 .main-content {
   flex: 1;

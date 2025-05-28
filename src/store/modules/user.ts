@@ -5,7 +5,7 @@
  */
 
 import { defineStore } from 'pinia'
-import type { UserInfo } from '../types/user'
+import type { UserInfo } from '@/types/user'
 import { loginApi, fetchUserApi, logoutApi } from '@/services/user'
 
 export const useUserStore = defineStore('user', {
@@ -79,16 +79,30 @@ export const useUserStore = defineStore('user', {
     }
   },
 
-  /**
-   * 3. Getters：只做本地展示/状态派生
-   */
+
+  // 3. Getters: 派生属性，专用于 UI/组件消费
   getters: {
     /**
-     * 用户名首字母大写
+     * 用户名首字母大写（演示型）
      */
     displayName: (state): string =>
-      state.name ? state.name.charAt(0).toUpperCase() + state.name.slice(1) : '访客'
+      state.name ? state.name.charAt(0).toUpperCase() + state.name.slice(1) : '访客',
+
+    /**
+     * Getter: 返回完整用户信息对象（供布局/业务组件全局消费）
+     * - 谷歌推荐风格：Getter始终返回一个深拷贝，避免响应式污染外部对象。
+     * - 兼容 const userInfo = computed(() => useUserStore().userInfo)
+     */
+    userInfo: (state): UserInfo => ({
+      id: state.id,
+      name: state.name,
+      email: state.email,
+      avatarUrl: state.avatarUrl,
+      isLoggedIn: state.isLoggedIn
+    }),
+    // 也可简写为 state => state，但显式对象复制更安全。
   },
+
   persist: true // 开启自动持久化，所有state字段自动同步到本地
 
 })

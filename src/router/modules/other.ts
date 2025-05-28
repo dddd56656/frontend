@@ -9,6 +9,6 @@ export const otherRoutes: RouteRecordRaw[] = [
     path: '/about',
     name: 'About',
     component: () => import('@/views/AppAbout.vue'),
-    meta: { layout: 'main', requiresAuth: true, title: '关于我们' }
+    meta: { layout: 'main', requiresAuth: false, title: '关于我们' }
   }
 ]

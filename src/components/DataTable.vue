@@ -6,7 +6,7 @@
  * - 谷歌最佳实践：UI只负责渲染，零业务代码
  */
 defineProps<{
-  columns: Array<{ label: string, prop: string }>, // 列定义
+  columns: Array<{ label: string; prop: string; slot?: string }>, // 加 slot?: string
   data: any[],                                     // 渲染数据
   loading?: boolean                                // loading 状态
 }>()

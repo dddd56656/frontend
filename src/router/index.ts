@@ -6,13 +6,14 @@ import { otherRoutes } from './modules/other'
 import { useUserStore } from '@/store/modules/user'
 import { ElMessageBox } from 'element-plus'
 import permissionRoutes from '@/router/modules/permission'
+import roleRoutes from './modules/role'
 
 // 找到 MainLayout 的 children，并把所有业务模块路由合进去
 const mainLayoutChildren = baseRoutes[1]?.children ?? []
 
 mainLayoutChildren.push(
   ...permissionRoutes,
-  // ...userRoutes,
+  ...roleRoutes,                                             // 角色模块路由
   // ...dashboardRoutes,
   // ...articleRoutes
   // ...其它业务模块

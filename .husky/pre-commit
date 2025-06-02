@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-echo "🔍 lint‑staged 正在检查暂存文件…"
-npx --no-install lint-staged || exit 1   # --no-install 省 30%‑40% 解析时间

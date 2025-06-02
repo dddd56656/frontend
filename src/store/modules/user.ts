@@ -1,108 +1,86 @@
-/**
- * 用户Pinia Store（只做状态与同步变更）
- * - Google标准：全部类型解耦，最大注释
- * - 只做本地状态管理/变更/展示，异步交由service
- */
+import { to } from 'await-to-js';
+import { getToken, removeToken, setToken } from '@/utils/auth';
+import { login as loginApi, logout as logoutApi, getInfo as getUserInfo } from '@/api/login';
+import { LoginData } from '@/api/types';
+import defAva from '@/assets/images/profile.jpg';
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
-import { defineStore } from 'pinia'
-import type { UserInfo } from '@/types/user'
-import { loginApi, fetchUserApi, logoutApi } from '@/services/user'
-
-export const useUserStore = defineStore('user', {
-  /**
-   * 1. State：本地用户信息
-   */
-  state: (): UserInfo => ({
-    id: '',
-    name: '访客',
-    email: '',
-    avatarUrl: '',
-    isLoggedIn: false
-  }),
+export const useUserStore = defineStore('user', () => {
+  const token = ref(getToken());
+  const name = ref('');
+  const nickname = ref('');
+  const userId = ref<string | number>('');
+  const tenantId = ref<string>('');
+  const avatar = ref('');
+  const roles = ref<Array<string>>([]); // 用户角色编码集合 → 判断路由权限
+  const permissions = ref<Array<string>>([]); // 用户权限编码集合 → 判断按钮权限
 
   /**
-   * 2. Actions：同步变更+异步业务（推荐复杂业务分离出service层）
+   * 登录
+   * @param userInfo
+   * @returns
    */
-  actions: {
-    /**
-     * 本地登录变更（仅存数据，不调接口）
-     * @param info 登录成功后的用户信息
-     */
-    setLogin(info: Omit<UserInfo, 'isLoggedIn'>) {
-      this.id = info.id
-      this.name = info.name
-      this.email = info.email
-      this.avatarUrl = info.avatarUrl ?? ''
-      this.isLoggedIn = true
-    },
-
-    /**
-     * 本地登出变更（重置所有状态）
-     */
-    setLogout() {
-      this.id = ''
-      this.name = '访客'
-      this.email = ''
-      this.avatarUrl = ''
-      this.isLoggedIn = false
-    },
-
-    /**
-     * 登录流程（调API + 本地写入）
-     */
-    async login(username: string, password: string) {
-      const user = await loginApi(username, password)
-      console.log('用户信息' + user)
-
-      this.setLogin(user)
-      // === 推荐：持久化写入localStorage（大厂标准做法） ===
-      console.log('userInfo' + JSON.stringify(user))
-
-      // 可选：本地存储token等
-    },
-
-    /**
-     * 拉取当前用户信息并写入本地
-     */
-    async fetchUser() {
-      const user = await fetchUserApi()
-      this.setLogin(user)
-    },
-
-    /**
-     * 登出流程（调API + 本地清理）
-     */
-    async logout() {
-      await logoutApi()
-      this.setLogout()
-      // 可选：清理token
+  const login = async (userInfo: LoginData): Promise<void> => {
+    const [err, res] = await to(loginApi(userInfo));
+    if (res) {
+      const data = res.data;
+      setToken(data.access_token);
+      token.value = data.access_token;
+      return Promise.resolve();
     }
-  },
+    return Promise.reject(err);
+  };
 
+  // 获取用户信息
+  const getInfo = async (): Promise<void> => {
+    const [err, res] = await to(getUserInfo());
+    if (res) {
+      const data = res.data;
+      const user = data.user;
+      const profile = user.avatar == '' || user.avatar == null ? defAva : user.avatar;
 
-  // 3. Getters: 派生属性，专用于 UI/组件消费
-  getters: {
-    /**
-     * 用户名首字母大写（演示型）
-     */
-    displayName: (state): string =>
-      state.name ? state.name.charAt(0).toUpperCase() + state.name.slice(1) : '访客',
+      if (data.roles && data.roles.length > 0) {
+        // 验证返回的roles是否是一个非空数组
+        roles.value = data.roles;
+        permissions.value = data.permissions;
+      } else {
+        roles.value = ['ROLE_DEFAULT'];
+      }
+      name.value = user.userName;
+      nickname.value = user.nickName;
+      avatar.value = profile;
+      userId.value = user.userId;
+      tenantId.value = user.tenantId;
+      return Promise.resolve();
+    }
+    return Promise.reject(err);
+  };
 
-    /**
-     * Getter: 返回完整用户信息对象（供布局/业务组件全局消费）
-     * - 谷歌推荐风格：Getter始终返回一个深拷贝，避免响应式污染外部对象。
-     * - 兼容 const userInfo = computed(() => useUserStore().userInfo)
-     */
-    userInfo: (state): UserInfo => ({
-      id: state.id,
-      name: state.name,
-      email: state.email,
-      avatarUrl: state.avatarUrl,
-      isLoggedIn: state.isLoggedIn
-    }),
-    // 也可简写为 state => state，但显式对象复制更安全。
-  },
+  // 注销
+  const logout = async (): Promise<void> => {
+    await logoutApi();
+    token.value = '';
+    roles.value = [];
+    permissions.value = [];
+    removeToken();
+  };
 
-  persist: true // 开启自动持久化，所有state字段自动同步到本地
+  const setAvatar = (value: string) => {
+    avatar.value = value;
+  };
 
-})
+  return {
+    userId,
+    tenantId,
+    token,
+    nickname,
+    avatar,
+    roles,
+    permissions,
+    login,
+    getInfo,
+    logout,
+    setAvatar
+  };
+});
